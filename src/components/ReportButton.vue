@@ -29,7 +29,7 @@ export default {
         }
     },
     watch : {
-        picturNumber : function(){
+        pictureNumber : function(){
             let self = this;
             console.log(this.pictureNumber + "Report Button Created")
             this.$axios.get("http://localhost:80/report/verify/"+storage.getItem("userNumber")+"/"+this.pictureNumber)

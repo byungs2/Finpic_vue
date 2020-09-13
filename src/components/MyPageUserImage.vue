@@ -1,7 +1,7 @@
 <template>
     <div id = "searchBoxInMypage">
         <div id = "show" v-for="post in postList" v-bind:key = "post.postId">
-            <img v-bind:src="post.img">
+            <img v-bind:src="post.img" v-on:click = "mypage(post.pictureNumber,post.userEmail,post.userNumber)">
             <LikeButton :pictureNumber="post.pictureNumber"/>
             <ReportButton :pictureNumber="post.pictureNumber"/>
             <FavoriteButton :mypicture-number="post.pictureNumber"/>
@@ -69,7 +69,16 @@ export default {
             }
         })
     },
-
+    methods: {
+        mypage : function(x,y,z){
+            EventBus.$off("search");
+            storage.setItem("otherUserEmail", y);
+            storage.setItem("otherUserNumber", z);
+            storage.setItem("pictureNumber", x);
+            this.$router.push("/mypage");
+            this.$router.go("/");
+        },
+    },
 
 }
 </script>
