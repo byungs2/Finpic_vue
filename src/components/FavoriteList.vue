@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div id="favorite"  v-for="post in postList" v-bind:key="post.postId">
         <!--<a v-bind:href="post.link" target="_blank">-->
-        <img v-bind:src="post.img"/>
+        <img v-bind:src="post.img" v-on:click= "mypage(post.pictureNumber,post.userEmail,post.userNumber)"/>
         <p>posted by: {{post.userEmail}}</p>
         <p>사진번호: {{post.pictureNumber}}</p> <!--태그 가지고 오는 걸로 바꾸기.-->
         <!--삭제버튼-->
@@ -23,14 +23,17 @@ export default {
       data: function () {
         return {
           postList : [],
+          dummy : 0,
         };
       },
       created: function () { 
+            this.dummy = 1;
             console.log("favoritelist-created");
             EventBus.$on('favorite-req', this.favoriteReq);
       },
-      methods: {
-        favoriteReq : function() {
+      watch : {
+        dummy : function(){
+          console.log("---- favoriteREQ ----")
             let self = this;
             this.postList = [];
             this.$axios.get("http://127.0.0.1:80/favorite/"+ storage.getItem("userNumber")) //favoritelist출력
@@ -43,12 +46,45 @@ export default {
                   postId : i,
                   pictureNumber: res.data.pictureNumberList[i],
                   link:"",
+                  userNumber : x.data.pictureObject[i].userId.userNumber,
                   userEmail:res.data.pictureObject[i].userId.userEmail,
                   img:res.data.img[i]
               });
               }
             console.log(res.data);
             });
+        }
+      },
+      methods: {
+        favoriteReq : function() {
+            console.log("---- favoriteREQ ----")
+            let self = this;
+            this.postList = [];
+            this.$axios.get("http://127.0.0.1:80/favorite/"+ storage.getItem("userNumber")) //favoritelist출력
+            .then(res => {
+            res.data.pictureObject.sort(function(a, b){
+                return a.pictureNumber - b.pictureNumber
+            });
+              for(var i =0;i<res.data.pictureNumberList.length;i++){
+                self.postList.push({
+                  postId : i,
+                  pictureNumber: res.data.pictureNumberList[i],
+                  link:"",
+                  userNumber : x.data.pictureObject[i].userId.userNumber,
+                  userEmail:res.data.pictureObject[i].userId.userEmail,
+                  img:res.data.img[i]
+              });
+              }
+            console.log(res.data);
+            });
+        },
+        mypage : function(x,y,z){
+            EventBus.$off("search");
+            storage.setItem("otherUserEmail", y);
+            storage.setItem("otherUserNumber", z);
+            storage.setItem("pictureNumber", x);
+            this.$router.push("/mypage");
+            this.$router.go("/");
         },
         deleteFavorite : function(pictureNumber,postId){
           let self = this;
@@ -64,7 +100,7 @@ export default {
                     self.postList.splice(index,1);//postList 삭제
                     EventBus.$off('favorite-req');
                     // EventBus.$emit('favoriteChange',res.data);
-              });  
+              });
           },
       },
 }
