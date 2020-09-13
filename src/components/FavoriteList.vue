@@ -1,13 +1,13 @@
 <template>
   <div id="favoriteList">
     <div class="wrapper">
-      <div id="favorite"  v-for="post in postList" v-bind:key="post.id">
+      <div id="favorite"  v-for="post in postList" v-bind:key="post.postId">
         <!--<a v-bind:href="post.link" target="_blank">-->
         <img v-bind:src="post.img"/>
         <p>posted by: {{post.userEmail}}</p>
         <p>사진번호: {{post.pictureNumber}}</p> <!--태그 가지고 오는 걸로 바꾸기.-->
         <!--삭제버튼-->
-        <button type = "button" v-on:click.stop = "deleteFavorite(post.pictureNumber,post.postId)">&#x00D7;</button>
+        <button type = "button" v-on:click = "deleteFavorite(post.pictureNumber,post.postId)">&#x00D7;</button>
         <!--</a>-->
       </div>
     </div>
@@ -27,15 +27,17 @@ export default {
       },
       created: function () { 
             console.log("favoritelist-created");
-            EventBus.$off('favoriteChange');
-            EventBus.$on('favorite-req', this.favoriteReq); 
-
+            EventBus.$on('favorite-req', this.favoriteReq);
       },
       methods: {
         favoriteReq : function() {
             let self = this;
+            this.postList = [];
             this.$axios.get("http://127.0.0.1:80/favorite/"+ storage.getItem("userNumber")) //favoritelist출력
             .then(res => {
+            res.data.pictureObject.sort(function(a, b){
+                return a.pictureNumber - b.pictureNumber
+            });
               for(var i =0;i<res.data.pictureNumberList.length;i++){
                 self.postList.push({
                   postId : i,
@@ -49,22 +51,22 @@ export default {
             });
         },
         deleteFavorite : function(pictureNumber,postId){
+          let self = this;
           this.$axios({
             method: "delete",
             url: "http://127.0.0.1:80/favorite/"+ storage.getItem("userNumber")+"/"+ pictureNumber,
             })
              .then(res => {
                     console.log("favorite삭제 결과:"+res.data);
-                    let index = this.postList.findIndex(function (item) {
-                    return item.id === postId; //삭제버튼 누른 인덱스 같으면
+                    let index = self.postList.findIndex(function (item) {
+                    return item.postId === postId; //삭제버튼 누른 인덱스 같으면
                 });
-                    this.postList.splice(index,1);//postList 삭제
+                    self.postList.splice(index,1);//postList 삭제
                     EventBus.$off('favorite-req');
                     // EventBus.$emit('favoriteChange',res.data);
-                    
               });  
           },
-      }
+      },
 }
 </script>
 <style scoped>

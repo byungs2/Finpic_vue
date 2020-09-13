@@ -4,7 +4,7 @@
         <button type = "button" v-on:click = "like()" v-if="!toggle && token != null && token.length != 0 && token != 'undefined'">dislike</button>
     </div>
 </template>
-
+ 
 <script>
 const storage = window.sessionStorage;
 
@@ -21,6 +21,7 @@ export default {
     ],
     methods: {
         like : function(){
+            console.log(this.pictureNumber);
             let self = this;
             this.$axios.put("http://localhost:80/like/"+storage.getItem("userNumber")+"/"+this.pictureNumber)
             .then(res => {
@@ -28,12 +29,24 @@ export default {
             })
         }
     },
-    created() {
-        let self = this;
-        this.$axios.get("http://localhost:80/like/verify/"+storage.getItem("userNumber")+"/"+this.pictureNumber)
-        .then(res => {
-            self.toggle = res.data;
-        })
+    watch : { 
+        pictureNumber : function(){
+            let self = this;
+            console.log("LIKE BUTTON CREATED"+this.pictureNumber);
+            this.$axios.get("http://localhost:80/like/verify/"+storage.getItem("userNumber")+"/"+this.pictureNumber)
+            .then(res => {
+                self.toggle = res.data;
+            }).catch();
+        }
     },
+    created : function(){
+            let self = this;
+            console.log("LIKE BUTTON CREATED"+this.pictureNumber);
+            this.$axios.get("http://localhost:80/like/verify/"+storage.getItem("userNumber")+"/"+this.pictureNumber)
+            .then(res => {
+                self.toggle = res.data;
+            }).catch();
+        },
+    
 }
 </script>

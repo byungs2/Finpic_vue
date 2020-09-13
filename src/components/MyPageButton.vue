@@ -18,6 +18,7 @@ export default {
         MyPageButton : function(){
             storage.setItem("otherUserNumber",storage.getItem("userNumber"));
             storage.setItem("otherUserEmail",storage.getItem("userEmail"));
+            storage.setItem("pictureNumber" , "");
             this.$router.push("/mypage");
             this.$router.go("/");
         }

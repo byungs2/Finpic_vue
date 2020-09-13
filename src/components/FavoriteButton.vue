@@ -6,7 +6,7 @@
 <script>
 // import EventBus from '../EventBus/EventBus'
 const storage = window.sessionStorage;
-
+ 
 export default {
     name : "FavoriteButton",
     props:['mypictureNumber'],
@@ -18,19 +18,12 @@ export default {
     },
     created:function(){
         let self = this;
+        console.log("FAVORITE BUTTON CREATED" + self.mypictureNumber);
         this.$axios.get("http://127.0.0.1:80/favorite/"+storage.getItem("userNumber")+"/check/"+ self.mypictureNumber)
         .then(res => {
-            console.log(res.data);
             self.add=res.data;
-        });
+        }).catch();
     },
-    // beforeUpdate:function() {
-    //      EventBus.$on('favoriteChange',x=>{
-    //         if(x!=null){
-    //             this.add=x;//false;
-    //         }
-    //     });     
-    // },
     methods : {
         checked: function(add){
             if(add){
@@ -57,8 +50,17 @@ export default {
                 });
             }
         },
-        
     },
+    watch : {
+        mypictureNumber : function(){
+            let self = this;
+            console.log("FAVORITE BUTTON CREATED" + self.mypictureNumber);
+            this.$axios.get("http://127.0.0.1:80/favorite/"+storage.getItem("userNumber")+"/check/"+ self.mypictureNumber)
+            .then(res => {
+                self.add=res.data;
+            }).catch();           
+        }
+    }
 }
 </script>
 <style scoped>

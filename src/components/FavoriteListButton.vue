@@ -1,12 +1,10 @@
 <template>
     <div id="favoriteListButton" >
-    <button type = "button" v-on:click.once ="favoriteReq" v-if="userEmail==otherUserEmail">즐겨찾기</button>
-    <FavoriteList/>
+        <button type = "button" v-on:click ="favoriteReq" v-if="userEmail==otherUserEmail">즐겨찾기</button>
     </div>
 </template>
 <script>
 import EventBus from "../EventBus/EventBus.js"
-import FavoriteList from "./FavoriteList.vue"
 const storage = window.sessionStorage;
 
 export default {
@@ -17,13 +15,10 @@ export default {
             otherUserEmail: storage.getItem("otherUserEmail")
         }
     },
-    components : {
-        FavoriteList
-    },
     methods:{
         favoriteReq : function() {
             EventBus.$emit('favorite-req');
         }
-    }
+    },
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div id = "searchBoxInMypage">
-        <div id = "show" v-for="post in postList" v-bind:key = "post.postid">
+        <div id = "show" v-for="post in postList" v-bind:key = "post.postId">
             <img v-bind:src="post.img">
             <LikeButton :pictureNumber="post.pictureNumber"/>
             <ReportButton :pictureNumber="post.pictureNumber"/>
@@ -31,7 +31,12 @@ export default {
     },
     mounted() {
         EventBus.$on("search", x => {
+            console.log("-----------")
             this.postList = [];
+            x.data.pictureObject.sort(function(a, b){
+                return a.pictureNumber - b.pictureNumber
+            });
+            console.log(x);
             for(let i = 0 ; i < x.data.pictureNumberList.length;i++){
                     this.postList.push({
                     postId : i,
@@ -41,7 +46,7 @@ export default {
                     img : x.data.img[i],
                 })
             }
-        }
+            }
         );
 
     },
@@ -49,6 +54,10 @@ export default {
         let self = this
         this.$axios.get("http://127.0.0.1:80/pictures/" + self.otherUserNumber)
         .then(res => {
+            this.postList = [];
+            res.data.pictureObject.sort(function(a, b){
+                return a.pictureNumber - b.pictureNumber
+            });
             for(let i = 0 ; i < res.data.pictureNumberList.length;i++){
                 self.postList.push({
                     postId : i,

@@ -14,9 +14,10 @@
       <DelProfileImgBtn v-if = "toggleUpdate"/>
       <DeleteID v-if = "toggleUpdate"/>
       <ShowPost />
-      <MyPageUserImage v-if = "toggleMyPicture"/>
-      <FollowButton/>
+      <MyPageUserImage />
       <FavoriteListButton/>
+      <FavoriteList/>
+      <FollowButton/>
       <FollowListButton/>
     </div>
     <router-view/>
@@ -24,7 +25,7 @@
 </template>
 <script>
 const storage = window.sessionStorage;
-
+import FavoriteList from "../../components/FavoriteList.vue"
 import MainPageButton from '../../components/MainPageButton.vue'
 import TagSearchBoxNoAll from '../../components/TagSearchBoxNoAll.vue'
 import ShowUserInfo from "../../components/ShowUserInfo.vue";
@@ -66,7 +67,6 @@ export default {
         this.toggleFollowList = false;
         this.toggleOnePicture = false;
       },
-
     },
     components : {
       MainPageButton,
@@ -84,7 +84,7 @@ export default {
       FavoriteListButton,
       FollowListButton,
       ShowPost,
-
+      FavoriteList,
     },
     created() {
       this.pictureNumber = storage.getItem("PictureNumber");

@@ -3,19 +3,20 @@
         <button type = "button" v-on:click = "followSearch" v-if="toUserEmail==userEmail">
             FollowList({{followCount}})
         </button>
-        <div id = "show" v-for="follow in followList" v-bind:key = "follow.followId">
-            <button type = "button" v-on:click = "followPage(follow.followEmail, follow.followNumber)">
-                <img v-bind:src="follow.followImg">
-                {{follow.followName}} {{follow.followEmail}} {{follow.followNumber}}
-            </button>
+        <div>
+            <div id = "show" v-for="follow in followList" v-bind:key = "follow.followId" >
+                <button type = "button" v-on:click = "followPage(follow.followEmail, follow.followNumber)">
+                    <img v-bind:src="follow.followImg">
+                    {{follow.followName}} {{follow.followEmail}} {{follow.followNumber}}
+                </button>
+            </div>
         </div>
-
 	</div>
 </template>
 
 <script>
-    const storage = window.sessionStorage;
 
+    const storage = window.sessionStorage;
     export default {
         name: "followListButton",
         data: function () {
@@ -34,6 +35,7 @@
                     .get("http://localhost:80/follow/follow/"+self.userNumber)
                     .then((res) => {
                         self.followList = [];
+                        
                             for(let i = 0 ; i < res.data.data.length;i++){
                                 self.followList.push({
                                 followId : i,

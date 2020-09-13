@@ -1,6 +1,6 @@
 <template>
     <div id = "image_show_box">
-        <div id = "show" v-for="post in postList" v-bind:key = "post.postid">
+        <div id = "show" v-for="post in postList" v-bind:key = "post.postId">
             <img v-bind:src="post.img" v-on:click = "mypage(post.pictureNumber,post.userEmail,post.userNumber)">
             <LikeButton :pictureNumber="post.pictureNumber"/>
             <ReportButton :pictureNumber ="post.pictureNumber"/>
@@ -40,10 +40,11 @@ export default {
         },
     },
     mounted() {
+        let self = this;
         EventBus.$on("search", x => {
-            this.postList = [];
+            self.postList = [];
             for(let i = 0 ; i < x.data.pictureNumberList.length;i++){
-                    this.postList.push({
+                    self.postList.push({
                     postId : i,
                     pictureNumber : x.data.pictureNumberList[i],
                     userEmail : x.data.pictureObject[i].userId.userEmail,
@@ -53,12 +54,15 @@ export default {
             }
         }
         );
-
     },
     created() {
         let self = this
         this.$axios.get("http://127.0.0.1:80/all-pictures")
         .then(res => {
+            res.data.pictureObject.sort(function(a, b){
+                return a.pictureNumber - b.pictureNumber
+            });
+            console.log(res)
             for(let i = 0 ; i < res.data.pictureNumberList.length;i++){
                 self.postList.push({
                     postId : i,

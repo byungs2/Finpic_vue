@@ -2,8 +2,8 @@
   <div id="ShowPost">
     <div id="show">
       <img v-bind:src="img" />
-      <LikeButton :pictureNumber="pictureNumber" />
-      <ReportButton :pictureNumber="pictureNumber" />
+      <LikeButton :pictureNumber="pictureNumber" v-if="img"/>
+      <ReportButton :pictureNumber="pictureNumber" v-if="img"/>
       {{tags}}
     </div>
   </div>
@@ -34,6 +34,7 @@ export default {
         self.img = res.data.img;
         self.tags = res.data.tags;
       });
+      storage.setItem("pictureNumber","");
   },
 
 };

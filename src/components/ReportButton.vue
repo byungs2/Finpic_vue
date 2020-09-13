@@ -28,12 +28,23 @@ export default {
             })
         }
     },
-    created() {
-        let self = this;
-        this.$axios.get("http://localhost:80/report/verify/"+storage.getItem("userNumber")+"/"+this.pictureNumber)
-        .then(res => {
-            self.toggle = res.data;
-        })
+    watch : {
+        picturNumber : function(){
+            let self = this;
+            console.log(this.pictureNumber + "Report Button Created")
+            this.$axios.get("http://localhost:80/report/verify/"+storage.getItem("userNumber")+"/"+this.pictureNumber)
+            .then(res => {
+                self.toggle = res.data;
+            }).catch();
+        } 
+    },
+    created : function(){
+            let self = this;
+            console.log(this.pictureNumber + "Report Button Created")
+            this.$axios.get("http://localhost:80/report/verify/"+storage.getItem("userNumber")+"/"+this.pictureNumber)
+            .then(res => {
+                self.toggle = res.data;
+            }).catch();
     },
 }
 </script>

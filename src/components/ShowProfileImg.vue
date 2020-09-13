@@ -17,6 +17,7 @@ export default {
   },
   methods : {
     mypage : function(){
+      storage.setItem("pictureNumber", "");
       this.$router.replace("/mypage");
       this.$router.go("/");
     }
